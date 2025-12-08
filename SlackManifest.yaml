@@ -1,0 +1,49 @@
+display_information:
+  name: KittenBot
+features:
+  bot_user:
+    display_name: KittenBot
+    always_online: true
+  slash_commands:
+    - command: /catimage
+      description: Gives you a random cat image!
+      should_escape: false
+    - command: /catfact
+      description: Get a random cat fact!
+      should_escape: false
+    - command: /about
+      description: Get information about this bot
+      should_escape: false
+    - command: /catgif
+      description: Gives you a random cat gif!
+      should_escape: false
+    - command: /help
+      description: Shows commands for the bot
+      should_escape: false
+    - command: /weather
+      description: What is the weather?
+      usage_hint: "[city]"
+      should_escape: false
+oauth_config:
+  scopes:
+    bot:
+      - app_mentions:read
+      - channels:history
+      - chat:write
+      - commands
+      - groups:history
+      - im:history
+      - mpim:history
+      - reactions:write
+      - files:read
+settings:
+  event_subscriptions:
+    bot_events:
+      - app_mention
+      - message.channels
+      - message.groups
+  interactivity:
+    is_enabled: true
+  org_deploy_enabled: false
+  socket_mode_enabled: true
+  token_rotation_enabled: false
