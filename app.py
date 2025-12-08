@@ -210,7 +210,7 @@ def get_info(ack, respond):
 						"emoji": True
 					},
 					"value": "click_me_123",
-					"url": "https://github.com/Snowflake6413",
+					"url": "https://github.com/Snowflake6413/kittenbot",
 					"action_id": "actionId-1"
 				}
 			]
