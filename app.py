@@ -23,6 +23,7 @@ OAI_BASE_URL= os.getenv('OAI_BASE_URL')
 LLM_MODEL = os.getenv('LLM_MODEL')
 MODERATION_URL = os.getenv('MODERATION_URL')
 MODERATION_KEY = os.getenv('MODERATION_KEY')
+WEATHER_API_KEY = os.getenv("OPENWEATHER_API_KEY")
 
 #configure OAI 
 chat_client = OpenAI(
@@ -66,6 +67,47 @@ def cat_img(ack, say):
         )
     else:
         say("Sorry, no cats found right now.")
+
+@app.command("/weather")
+def weather_in_cat_city(ack, respond, command):
+    ack
+    city = command.get('text', '').strip() or 'Istanbul'
+
+    try: 
+        url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={WEATHER_API_KEY}&units=metric"
+        response = requests.get(url)
+
+        if response.status_code == 200:
+         data = response.json()
+
+        temp = data['main']['temp']
+        feels_like = data['main']['feels_like']
+        description = data['weather'][0]['description']
+        humidity = data['main']['humidity']
+        wind_speed = data['wind']['speed']
+
+        blocks = [
+            {
+	
+			"type": "section",
+			"text": {
+				"type": "plain_text",
+				"text": "🌤️ Weather in {city.title()}",
+				"emoji": True
+			}
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "*Temperature:* {temp}°C (feels like {feels_like}°C)\n*Condition:* {description.title()}\n*Humidity:* {humidity}%\n*Wind Speed:* {wind_speed} m/s"
+			}
+		}
+	]
+        respond(blocks=blocks)
+    
+    except Exception as e:
+     print("oOPS!")
 
 @app.command("/help")
 def bot_help(ack, respond):
