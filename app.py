@@ -1,3 +1,5 @@
+# Dont judge my code :cry:
+# Our imports
 import time
 import os
 import requests
@@ -6,25 +8,35 @@ from dotenv import load_dotenv
 from slack_bolt import App
 from slack_bolt.adapter.socket_mode import SocketModeHandler
 
+# Just to make sure its actually running :winky:
 print("Running...")
 
+# Get .env and passes them as REAL variables
 load_dotenv()
 
 
-
+# our envs
 SLACK_BOT_TOKEN = os.getenv("SLACK_BOT_TOKEN")
 SLACK_APP_TOKEN = os.getenv('SLACK_APP_TOKEN')
 OAI_KEY = os.getenv('OAI_KEY')
 OAI_BASE_URL= os.getenv('OAI_BASE_URL')
 LLM_MODEL = os.getenv('LLM_MODEL')
+MODERATION_URL = os.getenv('MODERATION_URL')
+MODERATION_KEY = os.getenv('MODERATION_KEY')
 
-client = OpenAI(
+#configure OAI 
+chat_client = OpenAI(
             api_key=OAI_KEY,
             base_url=OAI_BASE_URL
         )
-
+# configure moderation OAI
+moderation_client = OpenAI(
+    base_url=MODERATION_URL,
+    api_key=MODERATION_KEY
+)
+# set bot token
 app = App(token=SLACK_BOT_TOKEN)
-
+# First slash cmd
 @app.command("/catimage")
 def cat_img(ack, say):
     ack()
@@ -108,7 +120,7 @@ def get_info(ack, respond):
 					},
 					"value": "click_me_123",
 					"url": "https://github.com/Snowflake6413",
-					"action_id": "actionId-0"
+					"action_id": "actionId-1"
 				}
 			]
 		},
@@ -124,7 +136,7 @@ def get_info(ack, respond):
 					},
 					"value": "click_me_123",
 					"url": "https://meow.hackclub.com",
-					"action_id": "actionId-0"
+					"action_id": "actionId-2"
 				}
 			]
 		}
@@ -164,19 +176,43 @@ def ai_mention(event, say, body, logger):
     logger.info(body)
     user_msg= event ['text']
     thread_ts = event.get("thread_ts", event["ts"])
+    channel_id = event["channel"]
+    original_text=event['text']
+
     try:
-        response = client.chat.completions.create(
-            model=LLM_MODEL,
-            messages=[
-            {
-                "role": "system",
-                "content": "You are a helpful assistant who speaks like a kitty."
-            },
-            {"role" : "user", "content": user_msg}
-            ],
-            max_tokens=150
+        
+        moderation = moderation_client.moderations.create(input=user_msg)
+        if moderation.results[0].flagged:
+            say(
+                text=f"Meow! :sadcat: I am unable to respond due to your message containing flagged content! Please try again with a new message!"
+        )
+        return
+
+        memory = app.chat_client.conversations_replies(
+            channel=channel_id,
+            ts=thread_ts,
+            limit = 10
         )
 
+        memory_data = memory['messages']
+
+        conversation_context = [
+            {"role": "system", "content":"You are a helpful assistant who speaks like a cute kitten."}
+        ]
+
+        for msg in memory_data:
+            text = msg.get("text")
+            if "bot_id" in msg:
+             conversation_context.append({"role": "assistant", "content": text})
+            else:
+               conversation_context.append({"role": "user", "content": text})
+
+        response = chat_client.chat.completions.create(
+            model=LLM_MODEL,
+            messages=conversation_context,
+            max_tokens=150
+        )
+         
         ai_reply= response.choices[0].message.content
         say(text=f"{ai_reply}", thread_ts=thread_ts)
 
@@ -185,6 +221,6 @@ def ai_mention(event, say, body, logger):
         say(text=f"Oops! Unable to get a response from OpenAI.", thread_ts=thread_ts)
 
   
-
+# run it and hope for the best
 if __name__ == "__main__":
     SocketModeHandler(app, os.environ["SLACK_APP_TOKEN"]).start()
