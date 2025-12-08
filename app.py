@@ -24,6 +24,7 @@ LLM_MODEL = os.getenv('LLM_MODEL')
 MODERATION_URL = os.getenv('MODERATION_URL')
 MODERATION_KEY = os.getenv('MODERATION_KEY')
 WEATHER_API_KEY = os.getenv("OPENWEATHER_API_KEY")
+# ALLOWED_CHANNEL_ID = os.getenv("ALLOWED_CHANNEL_ID")
 
 #configure OAI 
 chat_client = OpenAI(
@@ -37,6 +38,24 @@ moderation_client = OpenAI(
 )
 # set bot token
 app = App(token=SLACK_BOT_TOKEN)
+#gate keeper, remove # if needed.
+#@app.use 
+# def gatekeeper(context, next, ack, say):
+   # current_channel = context.get("channel_id")
+   # if current_channel and current_channel != ALLOWED_CHANNEL_ID:
+     # try:
+       #  ack()
+        # say(
+            # f"Meow! :sadcat: I am restricted to run only in <#{ALLOWED_CHANNEL_ID}>!",
+            #ephemeral=True
+        # )
+      #except Exception:
+       #  pass
+      
+      #return
+   
+  # next()
+      
 # First slash cmd
 @app.command("/catimage")
 def cat_img(ack, say):
