@@ -70,7 +70,7 @@ def cat_img(ack, say):
 
 @app.command("/weather")
 def weather_in_cat_city(ack, respond, command):
-    ack
+    ack()
     city = command.get('text', '').strip() or 'Istanbul'
 
     try: 
@@ -91,7 +91,7 @@ def weather_in_cat_city(ack, respond, command):
 			"type": "section",
 			"text": {
 				"type": "plain_text",
-				"text": "🌤️ Weather in {city.title()}",
+				"text": f"🌤️ Weather in {city}",
 				"emoji": True
 			}
 		},
@@ -99,7 +99,7 @@ def weather_in_cat_city(ack, respond, command):
 			"type": "section",
 			"text": {
 				"type": "mrkdwn",
-				"text": "*Temperature:* {temp}°C (feels like {feels_like}°C)\n*Condition:* {description.title()}\n*Humidity:* {humidity}%\n*Wind Speed:* {wind_speed} m/s"
+				"text": f"*Temperature:* {temp}°C (feels like {feels_like}°C)\n*Condition:* {description.title()}\n*Humidity:* {humidity}%\n*Wind Speed:* {wind_speed} m/s"
 			}
 		}
 	]
