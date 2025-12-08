@@ -171,24 +171,35 @@ def cat_gif(ack, respond):
     )
 
 @app.event("app_mention")
-def ai_mention(event, say, body, logger):
+def ai_mention(event, say, body, logger, client):
     logger.info("Moshi moshi! Got Message!")
     logger.info(body)
-    user_msg= event ['text']
+    user_msg= event['text']
     thread_ts = event.get("thread_ts", event["ts"])
     channel_id = event["channel"]
+    message_ts = event["ts"]
     original_text=event['text']
+    
+    try:
+        client.reactions_add(
+            channel=channel_id,
+            timestamp=message_ts,
+            name="thought_balloon"
+        )
+    except Exception as e:
+        print("Unable to add reaction")
 
     try:
         
         moderation = moderation_client.moderations.create(input=user_msg)
         if moderation.results[0].flagged:
             say(
-                text=f"Meow! :sadcat: I am unable to respond due to your message containing flagged content! Please try again with a new message!"
-        )
-        return
-
-        memory = app.chat_client.conversations_replies(
+                text=f"Meow! :sadcat: I am unable to respond due to your message containing flagged content! Please try again with a new message!", thread_ts=thread_ts
+        ) 
+            return
+        
+        
+        memory = client.conversations_replies(
             channel=channel_id,
             ts=thread_ts,
             limit = 10
@@ -197,7 +208,8 @@ def ai_mention(event, say, body, logger):
         memory_data = memory['messages']
 
         conversation_context = [
-            {"role": "system", "content":"You are a helpful assistant who speaks like a cute kitten."}
+            {"role": "system", "content":"Act as a helpful cat assistant. Be cute, use cat puns/sounds/emojis, address user as 'Hooman', and describe actions in italics (*purrs*). maintain persona while being useful."
+}
         ]
 
         for msg in memory_data:
@@ -217,8 +229,17 @@ def ai_mention(event, say, body, logger):
         say(text=f"{ai_reply}", thread_ts=thread_ts)
 
     except Exception as e:
-        print("Unable to call OpenAI {e}")
-        say(text=f"Oops! Unable to get a response from OpenAI.", thread_ts=thread_ts)
+        say(text=f"Oops! Unable to get a response from OpenAI. {e}", thread_ts=thread_ts)
+        
+    finally:
+        try:
+            client.reactions_remove(
+                channel=channel_id,
+                timestamp=message_ts,
+                name="thought_balloon"
+            )
+        except Exception as e:
+            print("Unable to remove reaction")
 
   
 # run it and hope for the best
