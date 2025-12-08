@@ -69,7 +69,7 @@ def cat_img(ack, say):
         say("Sorry, no cats found right now.")
 
 @app.command("/weather")
-def weather_in_cat_city(ack, respond, command):
+def weather_in_cat_city(ack, say, command):
     ack()
     city = command.get('text', '').strip() or 'Istanbul'
 
@@ -103,7 +103,7 @@ def weather_in_cat_city(ack, respond, command):
 			}
 		}
 	]
-        respond(blocks=blocks)
+        say(blocks=blocks)
     
     except Exception as e:
      print(f"Unable to send weather info. {e}")
