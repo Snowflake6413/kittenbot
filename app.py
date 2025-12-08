@@ -66,6 +66,56 @@ def cat_img(ack, say):
         )
     else:
         say("Sorry, no cats found right now.")
+
+@app.command("/help")
+def bot_help(ack, say):
+    
+    blocks=[{
+
+		
+			"type": "header",
+			"text": {
+				"type": "plain_text",
+				"text": "KittenBot Help :neocat:",
+				"emoji": True
+			}
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "Available commands for you to use!"
+			}
+		},
+		{
+			"type": "divider"
+		},
+		{
+			"type": "section",
+			"fields": [
+				{
+					"type": "mrkdwn",
+					"text": "*/catimage*\nGet a random cat picture."
+				},
+				{
+					"type": "mrkdwn",
+					"text": "*/catfact*\nGet a random cat fact."
+				},
+				{
+					"type": "mrkdwn",
+					"text": "*/catgif*\nGet a random cat GIF."
+				},
+				{
+					"type": "mrkdwn",
+					"text": "*/about*\nInfo about the creator."
+				},
+				{
+					"type": "mrkdwn",
+					"text": f"*@MeowBot [text]*\nMention me to chat with AI! Powered by {LLM_MODEL}!"
+				}
+			]
+		}
+	]
         
 @app.command("/catfact")
 def cat_fact(ack, say):
