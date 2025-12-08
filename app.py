@@ -79,7 +79,6 @@ def weather_in_cat_city(ack, respond, command):
 
         if response.status_code == 200:
          data = response.json()
-
         temp = data['main']['temp']
         feels_like = data['main']['feels_like']
         description = data['weather'][0]['description']
@@ -107,7 +106,7 @@ def weather_in_cat_city(ack, respond, command):
         respond(blocks=blocks)
     
     except Exception as e:
-     print("Unable to send weather info. {e}")
+     print(f"Unable to send weather info. {e}")
 
 @app.command("/help")
 def bot_help(ack, respond):
