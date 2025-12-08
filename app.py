@@ -68,7 +68,7 @@ def cat_img(ack, say):
         say("Sorry, no cats found right now.")
 
 @app.command("/help")
-def bot_help(ack, say):
+def bot_help(ack, respond):
     
     blocks=[{
 
@@ -116,7 +116,7 @@ def bot_help(ack, say):
 			]
 		}
 	]
-        
+    respond(blocks=blocks)
 @app.command("/catfact")
 def cat_fact(ack, say):
     ack()
