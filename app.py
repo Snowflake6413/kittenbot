@@ -264,7 +264,7 @@ def ai_mention(event, say, body, logger, client, respond):
         
         moderation = moderation_client.moderations.create(input=user_msg)
         if moderation.results[0].flagged:
-            respond(
+            say(
                 text=f"Meow! :sadcat: I am unable to respond due to your message containing flagged content! Please try again with a new message!", thread_ts=thread_ts
         ) 
             return
