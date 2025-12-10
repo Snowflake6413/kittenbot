@@ -69,23 +69,26 @@ def cat_img(ack, say, command):
         cat_id = data[0]['id']
 
         say(
-            blocks=[{
-                    "type": "header",
-                    "text": {
-                        "type": "mrkdwn",
-                        "text": f"Here is your cute kitty, <@{user_id}>! :neocat_3c: (ID: {cat_id})", 
-                    }
-                },
-                {
-                    "type": "image",
-                    "image_url": cat_url, 
-                    "alt_text": "Kitty!"
-                }
-            ],
-            text=f"Here is a cat! (ID: {cat_id})" 
+            blocks=[
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": f"Here is your cute kitty, <@{user_id}>! :neocat_3c: (ID: {cat_id})"
+			}
+		},
+		{
+			"type": "image",
+			"title": {
+				"type": "plain_text",
+				"text": "KITTY!!",
+				"emoji": True
+			},
+			"image_url": cat_url,
+			"alt_text": "KITTTTY!!!"
+		}
+	]
         )
-    else:
-        say("Sorry, no cats found right now.")
 
 
 @app.command("/help")
