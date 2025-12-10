@@ -58,8 +58,9 @@ app = App(token=SLACK_BOT_TOKEN)
       
 # First slash cmd
 @app.command("/catimage")
-def cat_img(ack, say):
+def cat_img(ack, say, command):
     ack()
+    user_id = command["user_id"]
     response = requests.get("https://api.thecatapi.com/v1/images/search")
     
     if response.status_code == 200:
@@ -72,7 +73,7 @@ def cat_img(ack, say):
                     "type": "header",
                     "text": {
                         "type": "plain_text",
-                        "text": f"Here is your cute kitty! :neocat_3c: (ID: {cat_id})", 
+                        "text": f"Here is your cute kitty, <@{user_id}>! :neocat_3c: (ID: {cat_id})", 
                         "emoji": True
                     }
                 },
@@ -139,8 +140,9 @@ def bot_help(ack, respond):
 	]
     respond(blocks=blocks)
 @app.command("/catfact")
-def cat_fact(ack, say):
+def cat_fact(ack, say, command):
     ack()
+    user_id = command["user_id"]
     response = requests.get("https://catfact.ninja/fact")
 
     if response.status_code == 200:
@@ -152,7 +154,7 @@ def cat_fact(ack, say):
 			"type": "section",
 			"text": {
 				"type": "plain_text",
-				"text": "Your cat fact! :neocat:",
+				"text": f"Here is your cat fact, <@{user_id}>! :neocat:",
 				"emoji": True
 			}
 		},
@@ -216,8 +218,9 @@ def get_info(ack, respond):
     respond(blocks=blocks)
 
 @app.command("/catgif") 
-def cat_gif(ack, respond):
+def cat_gif(ack, respond, command):
     ack()
+    user_id = command["user_id"]
     cooley_gif = f"https://cataas.com/cat/gif?t={time.time()}"
 
     respond(
@@ -228,7 +231,7 @@ def cat_gif(ack, respond):
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": "Here is a kitty gif! :neocat:"
+                    "text": f"Here is a kitty gif, <@{user_id}>! :neocat:"
                 }
             },  
             
