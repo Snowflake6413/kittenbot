@@ -97,11 +97,11 @@ def cat_img(ack, say, command):
             )
     except requests.exceptions.Timeout:
         say(
-            text=f"Meow! :sadcat: The cat API is taking too long to respond. Please try again later!"
+            text="Meow! :sadcat: The cat API is taking too long to respond. Please try again later!"
         )
     except requests.exceptions.RequestException:
         say(
-            text=f"Meow! :sadcat: I encountered an error while fetching a cat image. Please try again later!"
+            text="Meow! :sadcat: I encountered an error while fetching a cat image. Please try again later!"
         )
 
 
@@ -191,11 +191,11 @@ def cat_fact(ack, say, command):
             )
     except requests.exceptions.Timeout:
         say(
-            text=f"Meow! :sadcat: The cat fact API is taking too long to respond. Please try again later!"
+            text="Meow! :sadcat: The cat fact API is taking too long to respond. Please try again later!"
         )
     except requests.exceptions.RequestException:
         say(
-            text=f"Meow! :sadcat: I encountered an error while fetching a cat fact. Please try again later!"
+            text="Meow! :sadcat: I encountered an error while fetching a cat fact. Please try again later!"
         )
 
 @app.command("/about")
