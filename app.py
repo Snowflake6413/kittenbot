@@ -286,14 +286,23 @@ def ai_mention(event, say, body, logger, client, respond):
             )
 
             memory_data = memory['messages']
+            current_msg_included = False
 
             for msg in memory_data:
                 text = msg.get("text")
                 if text:  # Only process messages with text
+                    # Check if this is the current message
+                    if msg.get("ts") == message_ts:
+                        current_msg_included = True
+                    
                     if "bot_id" in msg:
                         conversation_context.append({"role": "assistant", "content": text})
                     else:
                         conversation_context.append({"role": "user", "content": text})
+            
+            # If current message wasn't in the thread history, add it
+            if not current_msg_included:
+                conversation_context.append({"role": "user", "content": user_msg})
         else:
             # First message in thread, just add the current user message
             conversation_context.append({"role": "user", "content": user_msg})
