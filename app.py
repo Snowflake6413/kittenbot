@@ -61,33 +61,47 @@ app = App(token=SLACK_BOT_TOKEN)
 def cat_img(ack, say, command):
     ack()
     user_id = command["user_id"]
-    response = requests.get("https://api.thecatapi.com/v1/images/search", timeout=10)
     
-    if response.status_code == 200:
-        data = response.json()
-        cat_url = data[0]['url']
-        cat_id = data[0]['id']
+    try:
+        response = requests.get("https://api.thecatapi.com/v1/images/search", timeout=10)
+        
+        if response.status_code == 200:
+            data = response.json()
+            cat_url = data[0]['url']
+            cat_id = data[0]['id']
 
+            say(
+                blocks=[
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": f"Here is your cute kitty, <@{user_id}>! :neocat_3c: (ID: {cat_id})"
+                }
+            },
+            {
+                "type": "image",
+                "title": {
+                    "type": "plain_text",
+                    "text": "KITTY!!",
+                    "emoji": True
+                },
+                "image_url": cat_url,
+                "alt_text": "KITTTTY!!!"
+            }
+        ]
+            )
+        else:
+            say(
+                text=f"Meow! :sadcat: I couldn't fetch a cat image right now (status {response.status_code}). Please try again later!"
+            )
+    except requests.exceptions.Timeout:
         say(
-            blocks=[
-		{
-			"type": "section",
-			"text": {
-				"type": "mrkdwn",
-				"text": f"Here is your cute kitty, <@{user_id}>! :neocat_3c: (ID: {cat_id})"
-			}
-		},
-		{
-			"type": "image",
-			"title": {
-				"type": "plain_text",
-				"text": "KITTY!!",
-				"emoji": True
-			},
-			"image_url": cat_url,
-			"alt_text": "KITTTTY!!!"
-		}
-	]
+            text=f"Meow! :sadcat: The cat API is taking too long to respond. Please try again later!"
+        )
+    except requests.exceptions.RequestException as e:
+        say(
+            text=f"Meow! :sadcat: I encountered an error while fetching a cat image. Please try again later!"
         )
 
 
@@ -145,30 +159,44 @@ def bot_help(ack, respond):
 def cat_fact(ack, say, command):
     ack()
     user_id = command["user_id"]
-    response = requests.get("https://catfact.ninja/fact", timeout=10)
+    
+    try:
+        response = requests.get("https://catfact.ninja/fact", timeout=10)
 
-    if response.status_code == 200:
-     data = response.json()
-     fact = data['fact']
+        if response.status_code == 200:
+            data = response.json()
+            fact = data['fact']
 
-    say(
-        blocks=[{
-			"type": "section",
-			"text": {
-				"type": "mrkdwn",
-				"text": f"Here is your cat fact, <@{user_id}>! :neocat:",
-			}
-		},
-		{
-			"type": "section",
-			"text": {
-				"type": "plain_text",
-				"text": fact,
-				"emoji": True
-			}
-		}
-	]
-    )
+            say(
+                blocks=[{
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": f"Here is your cat fact, <@{user_id}>! :neocat:",
+                    }
+                },
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "plain_text",
+                        "text": fact,
+                        "emoji": True
+                    }
+                }
+            ]
+            )
+        else:
+            say(
+                text=f"Meow! :sadcat: I couldn't fetch a cat fact right now (status {response.status_code}). Please try again later!"
+            )
+    except requests.exceptions.Timeout:
+        say(
+            text=f"Meow! :sadcat: The cat fact API is taking too long to respond. Please try again later!"
+        )
+    except requests.exceptions.RequestException as e:
+        say(
+            text=f"Meow! :sadcat: I encountered an error while fetching a cat fact. Please try again later!"
+        )
 
 @app.command("/about")
 def get_info(ack, respond):
